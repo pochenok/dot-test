@@ -1,10 +1,12 @@
 import React from 'react';
 import {Row, Col, Card, Tabs, Input, Collapse, Tooltip, Button, Badge} from 'antd';
+import {ValidationInfo} from '../project_info/project_info.component'
 
 import {
   PlayCircleOutlined,
   PauseCircleOutlined,
   CheckCircleFilled,
+  InfoCircleFilled,
   QuestionCircleOutlined
 } from '@ant-design/icons';
 
@@ -12,16 +14,20 @@ const {TabPane} = Tabs;
 const {Panel} = Collapse;
 
 export const Project = props => {
-  console.log(this.props.project.name)
-  console.log(typeof this.props)
   return (
     <Row>
       <Col span={24}>
-        <Card title={this.props.project.name} bordered={false} extra={(
+        <Card title={props.project.name} bordered={false} extra={(
           <span>
             <span style={{marginRight: '10px', fontSize: '14px'}}>Status: Active</span>
-            <PlayCircleOutlined style={{color: "#52c41a", marginRight: '5px'}}/>
-            <PauseCircleOutlined style={{color: "grey", cursor: 'pointer'}}/>
+            <PlayCircleOutlined
+              onClick={props.projectStatusChanger}
+              style={props.project.status ? {color: "#52c41a", marginRight: '5px'} : {
+                color: "grey",
+                marginRight: '5px'
+              }}/>
+            <PauseCircleOutlined
+              style={props.project.status ? {color: "grey", cursor: 'pointer'} : {color: "orange", cursor: 'pointer'}}/>
           </span>
         )}>
           <Tabs defaultActiveKey="1">
@@ -40,13 +46,18 @@ export const Project = props => {
                     <Row gutter={8}>
                       <Col span={12}>
                         <Input size="medium" placeholder="https://example.com/feed.csv" suffix={
-                          <Tooltip title="Feed was successfully validated on 01/01/2021">
-                            <CheckCircleFilled style={{color: 'green'}}/>
-                          </Tooltip>
+                          props.project.feed_validation_status ?
+                            <Tooltip title={`Feed was successfully validated on ${props.project.validation.date}`}>
+                              <CheckCircleFilled style={{color: 'green'}}/>
+                            </Tooltip>
+                            :
+                            <Tooltip title='Last feed validation failed. Please fix th error and try validating again'>
+                              <InfoCircleFilled style={{color: 'red'}}/>
+                            </Tooltip>
                         }/>
                       </Col>
                       <Col span={4}>
-                        <Button type="primary" size={'medium'} disabled>
+                        <Button type="primary" size={'medium'} disabled={props.project.feed_validation_status}>
                           Primary
                         </Button>
                       </Col>
@@ -56,21 +67,18 @@ export const Project = props => {
               </Row>
               <Row key="2" style={{marginTop: '10px'}}>
                 <Col span={24}>
-                  <Collapse>
-                    <Panel header="Validation information" key="1">
-                      <p>Last validation datge: 01/01/2021</p>
-                      <p>Items found: 9 990</p>
-                      <p>Columns found: 12</p>
-                      <p>Columns list: id, title, description, link, image_link, price, sale_price</p>
-                    </Panel>
-                  </Collapse>
+                  <ValidationInfo info={props.project.validation}/>
                 </Col>
               </Row>
             </TabPane>
             <TabPane
               tab={
                 <span>
-                  <Badge count={30} style={{backgroundColor: '#52c41a', marginRight: '5px'}} showZero/>
+                  <Badge count={props.project.templates.length} style={
+                    props.project.templates.length > 0 ?
+                      {backgroundColor: '#52c41a', marginRight: '5px'} :
+                      {backgroundColor: '#6f6e6e', marginRight: '5px'}
+                  } showZero/>
                     Template
                 </span>
               }
@@ -80,7 +88,11 @@ export const Project = props => {
             <TabPane
               tab={
                 <span>
-                  <Badge count={4} style={{backgroundColor: '#52c41a', marginRight: '5px'}} showZero/>
+                  <Badge count={props.project.rules_sets.length} style={
+                    props.project.rules_sets.length > 0 ?
+                      {backgroundColor: '#52c41a', marginRight: '5px'} :
+                      {backgroundColor: '#6f6e6e', marginRight: '5px'}
+                  } showZero/>
                     Rules Sets
                 </span>
               }
@@ -90,7 +102,11 @@ export const Project = props => {
             <TabPane
               tab={
                 <span>
-                  <Badge count={0} style={{backgroundColor: '#6f6e6e', marginRight: '5px'}} showZero/>
+                  <Badge count={props.project.feeds.length} style={
+                    props.project.feeds.length > 0 ?
+                      {backgroundColor: '#52c41a', marginRight: '5px'} :
+                      {backgroundColor: '#6f6e6e', marginRight: '5px'}
+                  } showZero/>
                     Feeds
                 </span>
               }

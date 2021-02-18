@@ -33,7 +33,7 @@ class App extends React.Component {
             'columns_list': ['id', 'title', 'description', 'link', 'image_link']
           },
           templates: [1,2,3,4,5],
-          rules_sets: [1,2],
+          rules_sets: [],
           feeds: []
         },
         {
@@ -47,8 +47,8 @@ class App extends React.Component {
             'columns': 10,
             'columns_list': ['id', 'title', 'description', 'link', 'image_link']
           },
-          templates: [1,2,3,4,5],
-          rules_sets: [1,2],
+          templates: [1,2,3,4],
+          rules_sets: [1],
           feeds: []
         },
         {
@@ -69,6 +69,11 @@ class App extends React.Component {
       ],
       collapsed: false,
     };
+  }
+
+  changeProjectStatus = (e) => {
+    console.log(e)
+    // this.setState({})
   }
 
   onCollapse = collapsed => {
@@ -126,7 +131,7 @@ class App extends React.Component {
               <Breadcrumb.Item>Projects</Breadcrumb.Item>
             </Breadcrumb>
 
-            <Projects projects={this.state.projects}/>
+            <Projects projects={this.state.projects} projectStatusChanger={this.changeProjectStatus}/>
 
           </Content>
           <Footer style={{textAlign: 'center'}}>DOT - Dynamic Optimisation Tool ©2018 Performics</Footer>
