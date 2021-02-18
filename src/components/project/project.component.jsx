@@ -1,6 +1,6 @@
 import React from 'react';
-import {Row, Col, Card, Tabs, Input, Collapse, Tooltip, Button, Badge} from 'antd';
 import {ValidationInfo} from '../project_info/project_info.component'
+import {Row, Col, Card, Tabs, Input, Collapse, Tooltip, Button, Badge} from 'antd';
 
 import {
   PlayCircleOutlined,
