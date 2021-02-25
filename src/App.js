@@ -1,10 +1,11 @@
-import React from 'react'
+import React from 'react';
 import {
   Layout,
   Menu,
   Breadcrumb,
   Dropdown,
   Avatar,
+  Spin
 } from 'antd';
 import {
   UserOutlined
@@ -20,53 +21,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      projects: [
-        {
-          name: 'Project #1',
-          status: true,
-          feed_link: 'https://pfxtools-dev.ru/feeds/feed.csv',
-          feed_validation_status: true,
-          validation: {
-            'date': '01/01/2021',
-            'items': 9999,
-            'columns': 10,
-            'columns_list': ['id', 'title', 'description', 'link', 'image_link']
-          },
-          templates: [1,2,3,4,5],
-          rules_sets: [],
-          feeds: []
-        },
-        {
-          name: 'Project #2',
-          status: false,
-          feed_link: 'https://pfxtools-dev.ru/feeds/feed.csv',
-          feed_validation_status: true,
-          validation: {
-            'date': '01/01/2021',
-            'items': 9999,
-            'columns': 10,
-            'columns_list': ['id', 'title', 'description', 'link', 'image_link']
-          },
-          templates: [1,2,3,4],
-          rules_sets: [1],
-          feeds: []
-        },
-        {
-          name: 'Project #3',
-          status: false,
-          feed_link: 'https://pfxtools-dev.ru/feeds/feed.csv',
-          feed_validation_status: false,
-          validation: {
-            'date': '01/01/2021',
-            'items': 9999,
-            'columns': 10,
-            'columns_list': ['id', 'title', 'description', 'link', 'image_link']
-          },
-          templates: [1,2,3,4,5],
-          rules_sets: [1,2],
-          feeds: [1]
-        }
-      ],
+      projects_loaded: false,
+      projects: [],
       collapsed: false,
     };
   }
@@ -80,6 +36,14 @@ class App extends React.Component {
     console.log(collapsed);
     this.setState({collapsed});
   };
+
+  componentDidMount() {
+    fetch('http://0.0.0.0:3001/projects')
+      .then(response => response.json())
+      .then(json => this.setState((prevState, prevProps) => {
+        return { projects: json.projects, projects_loaded: true }
+      }))
+  }
 
   render() {
     const menu = (
@@ -131,7 +95,11 @@ class App extends React.Component {
               <Breadcrumb.Item>Projects</Breadcrumb.Item>
             </Breadcrumb>
 
+            {this.state.projects_loaded ?
             <Projects projects={this.state.projects} projectStatusChanger={this.changeProjectStatus}/>
+            : <div style={{textAlign: "center", marginTop: "200px"}}>
+                <Spin size="large"/>
+              </div>}
 
           </Content>
           <Footer style={{textAlign: 'center'}}>DOT - Dynamic Optimisation Tool ©2018 Performics</Footer>
